@@ -1,5 +1,8 @@
 
 import networkx as nx
+import torch
+import numpy as np
+from collections import Iterable
 
 class DataLoader:
     def __init__(self):
@@ -44,4 +47,23 @@ class DataLoader:
     
 
 class Embedding:
-    def __init__(self):
+    def __init__(self, embedding):
+        load(embedding)
+
+    def load(self, embedding):
+        if isinstance(embedding, torch.nn.sparse.Embedding):
+            self.embedding = np.zeros((embedding.num_embeddings,
+             embedding.embedding_dim))
+            self.num_embeddings = embedding.num_embeddings
+            self.embedding_dim = embedding.embedding_dim
+        elif isinstance(embedding, list) or isinstance(embedding, np.ndarray):
+            self.embedding = np.array(embedding)
+            self.num_embeddings = len(embedding)
+            self.embedding_dim = len(embedding[0])
+    
+    def normalize(self):
+        for i, e in self.embedding: 
+            self.embedding[i, :] = e / np.linalg.norm(e)
+    
+    def concatenate(self):
+        pass
