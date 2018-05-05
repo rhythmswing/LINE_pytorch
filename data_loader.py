@@ -9,6 +9,8 @@ class DataLoader:
         self.graph = nx.Graph()
         self.vertex_to_idx = {}
         self.idx_to_vertex = {}
+        self.n_vertices = 0
+
 
     def add_indexed_edgelist(self, edgelists):
         idx = 0
@@ -24,6 +26,7 @@ class DataLoader:
                 edgelists[i][1] = idx
                 idx+=1
         self.graph.add_edges_from(edgelists)
+        self.n_vertices = len(edgelists)
 
 
     def from_adjacency_list(self, url, directed=False):

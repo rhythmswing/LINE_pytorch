@@ -26,14 +26,15 @@ class LINE2nd_Model(nn.Module):
     def __init__(self, n_vertices, n_dimension):
         super(LINE2nd_Model, self).__init__()
         self.embedding = nn.Embedding(n_vertices, n_dimension)
+        self.embedding_context = nn.Embedding(n_vertices, n_dimension)
 
-    def forward(self, pos_v, pos_u, neg_v, weights):
+    def forward(self, pos_v, pos_u, neg_u, weights):
 
         emb_v = self.embedding(pos_v)
-        emb_u = self.embedding(pos_u)
-        emb_neg_v = self.embedding(neg_v)
+        emb_u = self.embedding_context(pos_u)
+        emb_neg_u = self.embedding_context(neg_u)
 
-        neg_score = torch.bmm(emb_neg_v, emb_v.unsqueeze(2)).squeeze(2)
+        neg_score = torch.bmm(emb_neg_u, emb_v.unsqueeze(2)).squeeze(2)
         neg_score = F.logsigmoid(-neg_score)
         neg_score = torch.sum(neg_score, 1)
 
